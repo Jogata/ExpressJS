@@ -1,12 +1,21 @@
-// Create HTTP Server with Home, About and 404 page
+// Add index.html and css
 const http = require("http");
+const {readFileSync} = require("fs");
+
+const homePage = readFileSync('./methods-public/index.html');
+const homeCSS = readFileSync('./methods-public/styles.css');
 
 const server = http.createServer((req, res) => {
     const url = req.url;
     // Home
     if (url === '/'){
         res.writeHead(200, {'content-type':'text/html'});
-        res.end('<h1>Home</h1>');
+        res.end(homePage);
+    }
+    // Home/CSS
+    else if (url === '/styles.css'){
+        res.writeHead(200, {'content-type':'text/css'});
+        res.end(homeCSS);
     }
     // About
     else if (url === '/about'){
