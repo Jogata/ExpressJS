@@ -1,16 +1,19 @@
-// add get, add about, add 404
+// set index.html as Home page, add static files
 
 const express = require('express');
+const path = require('path');
 const app = express();
 
+app.use(express.static('./methods-public'));
+
 app.get('/', (req, res) => {
-    res.status(200).send('Home Page');
+    res.sendFile(path.resolve(__dirname, './methods-public/index.html'));
 })
 app.get('/about', (req, res) => {
-    res.status(200).send('About Page');
+    res.send('About Page');
 })
 app.all('*', (req, res) => {
-    res.status(404).send('Not Found');
+    res.send('Not Found');
 })
 
 app.listen(5000, () => {
