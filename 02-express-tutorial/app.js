@@ -14,6 +14,13 @@ app.get('api/products', (req, res) => {
     res.json(products);
 })
 
+app.get('api/products/names', (req, res) => {
+    const productsNames = products.map(product => {
+        return product.name;
+    })
+    res.json(productsNames);
+})
+
 app.get('/about', (req, res) => {
     res.send('About Page');
 })
