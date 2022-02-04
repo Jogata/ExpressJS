@@ -20,6 +20,25 @@ app.get('api/products/names', (req, res) => {
     })
     res.json(productsNames);
 })
+// Respond to request for Product by ID
+app.get('api/products/1', (req, res) => {
+    const product = products.find(product => {
+        return product;
+    })
+    res.json(product);
+})
+app.get('api/products/2', (req, res) => {
+    const product = products.find(product => {
+        return product;
+    })
+    res.json(product);
+})
+app.get('api/products/3', (req, res) => {
+    const product = products.find(product => {
+        return product;
+    })
+    res.json(product);
+})
 
 app.get('/about', (req, res) => {
     res.send('About Page');
