@@ -20,25 +20,6 @@ app.get('api/products/names', (req, res) => {
     })
     res.json(productsNames);
 })
-// Respond to request for Product by ID
-// app.get('api/products/1', (req, res) => {
-//     const product = products.find(product => {
-//         return product;
-//     })
-//     res.json(product);
-// })
-// app.get('api/products/2', (req, res) => {
-//     const product = products.find(product => {
-//         return product;
-//     })
-//     res.json(product);
-// })
-// app.get('api/products/3', (req, res) => {
-//     const product = products.find(product => {
-//         return product;
-//     })
-//     res.json(product);
-// })
 
 // =================   :PARAMS   ===================
 // Respond to request for Product by ID using params
@@ -49,6 +30,11 @@ app.get('/api/products/:productID', (req, res) => {
         return res.status(404).send('Product Does Not Exist');
     }
     return res.json(product);
+})
+
+// Respond to request for Product using more params
+app.get('/api/products/:productID/reviews/:reviewID', (req, res) => {
+    res.json = req.params; // will return { productID: "{:productID}", reviewID: "{:reviewID}"}
 })
 
 app.get('/about', (req, res) => {
