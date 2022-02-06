@@ -6,11 +6,21 @@ const app = express();
 // Set Static Files
 app.use(express.static('./methods-public'));
 
-app.get('/', (req, res) => {
+// =================   MIDDLEWARE   =================
+const logger = (req, res, next) => {
+    const method = req.method;
+    const url = req.url;
+    const year = new Date().getFullYear();
+    console.log(method, url, year);
+    next();
+}
+
+// =================   ROUTES   =================
+app.get('/', logger, (req, res) => {
     res.send('<h1>Home Page</h1><a href="/api/products">Products</a>');
 })
 
-app.get('api/products', (req, res) => {
+app.get('/api/products', logger, (req, res) => {
     res.json(products);
 })
 
