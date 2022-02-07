@@ -1,5 +1,6 @@
 const express = require('express');
 const products = require('./data');
+const logger = require('./demo/logger');
 
 const app = express();
 
@@ -7,13 +8,7 @@ const app = express();
 app.use(express.static('./methods-public'));
 
 // =================   MIDDLEWARE   =================
-const logger = (req, res, next) => {
-    const method = req.method;
-    const url = req.url;
-    const year = new Date().getFullYear();
-    console.log(method, url, year);
-    next();
-}
+app.use(logger);
 
 // =================   ROUTES   =================
 app.get('/', logger, (req, res) => {
