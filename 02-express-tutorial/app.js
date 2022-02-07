@@ -1,6 +1,7 @@
 const express = require('express');
 const products = require('./data');
 const logger = require('./demo/logger');
+const authorize = require('./demo/authorize');
 
 const app = express();
 
@@ -8,7 +9,8 @@ const app = express();
 app.use(express.static('./methods-public'));
 
 // =================   MIDDLEWARE   =================
-app.use(logger);
+// to pass authorize middleware - add ?user=jogata to the URL in the browser
+app.use([authorize, logger]);
 
 // =================   ROUTES   =================
 app.get('/', logger, (req, res) => {
