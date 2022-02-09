@@ -33,4 +33,12 @@ const products = [
   },
 ]
 
-module.exports = products;
+const users = [
+  { id: 1, name: 'john', password: '123456' },
+  { id: 2, name: 'peter', password: '123456' },
+  { id: 3, name: 'susan', password: '123456' },
+  { id: 4, name: 'anna', password: '123456' },
+  { id: 5, name: 'emma', password: '123456' },
+]
+
+module.exports = { products, users }

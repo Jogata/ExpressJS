@@ -1,7 +1,22 @@
 const express = require('express');
-const products = require('./data');
-const logger = require('./demo/logger');
-const authorize = require('./demo/authorize');
+const {products} = require('./data');
+let {users} = require('./data');
+
+// =============== DEMO ================
+// const logger = require('./demo/logger');
+// const authorize = require('./demo/authorize');
+
+// add * ?user=jogata * to the URL in the browser to access Authorize Middleware
+// app.use([authorize, logger]);
+
+// app.get('/demo', logger, (req, res) => {
+//     res.send('<h1>Home Page</h1><a href="/api/products">Products</a>');
+// })
+
+// app.get('/demo/api/products', logger, (req, res) => {
+//     res.json(products);
+// })
+// =============== DEMO ================
 
 const app = express();
 
@@ -9,19 +24,12 @@ const app = express();
 app.use(express.static('./methods-public'));
 
 // =================   MIDDLEWARE   =================
-// to pass authorize middleware - add ?user=jogata to the URL in the browser
-app.use([authorize, logger]);
+// BodyParser (middleware that give you access to the data from the body of the request)
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 // =================   ROUTES   =================
-app.get('/', logger, (req, res) => {
-    res.send('<h1>Home Page</h1><a href="/api/products">Products</a>');
-})
-
-app.get('/api/products', logger, (req, res) => {
-    res.json(products);
-})
-
-app.get('api/products/names', (req, res) => {
+app.get('/api/products/names', (req, res) => {
     const productsNames = products.map(product => {
         return product.name;
     })
@@ -29,8 +37,8 @@ app.get('api/products/names', (req, res) => {
 })
 
 // =================   :PARAMS   ===================
-// Respond to request for Product by ID using params
-app.get('/api/products/:productID', (req, res) => {
+// Respond to request for Product by ID using Params
+app.get('/api/products/id/:productID', (req, res) => {
     const {productID} = req.params;
     const product = products.find(product => product.id === Number(productID));
     if (!product){
@@ -39,13 +47,16 @@ app.get('/api/products/:productID', (req, res) => {
     return res.json(product);
 })
 
-// Respond to request for Product using more params
-app.get('/api/products/:productID/reviews/:reviewID', (req, res) => {
-    res.json = req.params; // will return { productID: "{:productID}", reviewID: "{:reviewID}"}
+// Respond to request for Product using more Params
+app.get('/api/products/id/:productID/reviews/:reviewID', (req, res) => {
+    res.json(req.params);    // => { productID: "{:productID}", reviewID: "{:reviewID}"}
 })
 
 // =================   ?QUERY STRING   ===================
-// /api/products/query?search=""&limit=2
+// Respond to request for Product by name using Query
+    // /api/products/query?search=leather&limit=2  / => first two products with 'leather' in the name
+    // /api/products/query?search=leather          / => all products with 'leather' in the name
+    // /api/products/query?limit=2                 / => first two products
 app.get('/api/products/query', (req, res) => {
     const {search, limit} = req.query;
     let sortedProducts = [...products];
@@ -60,10 +71,31 @@ app.get('/api/products/query', (req, res) => {
         }
     }
     if (limit) {
-        return sortedProducts = sortedProducts.slice(0, Number(limit));
+        sortedProducts = sortedProducts.slice(0, Number(limit));
     }
-
     res.status(200).json(sortedProducts);
+})
+
+// Get all users (request from javascript.html)
+app.get('/api/people', (req, res) => {
+    res.status(200).json({success: true, data: users});
+})
+// Get user by name (request from Form HTML element/javascript.html)
+app.post('/api/people', (req, res) => {
+    const {name} = req.body;
+    if (name) {
+        res.status(201).json({success: true, person: name});
+    }
+    res.status(400).json({success: false, msg: "Please, enter a name"});
+})
+
+// Login (test)
+app.post('/login', (req, res) => {
+    const {name} = req.body;
+    if (name) {
+        return res.status(200).send(`Welcome ${name}`);
+    }
+    res.status(401).send('Missing Name and/or Password');
 })
 
 app.get('/about', (req, res) => {
