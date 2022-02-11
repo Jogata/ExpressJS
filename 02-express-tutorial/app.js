@@ -1,9 +1,8 @@
 const express = require('express');
 const {products} = require('./data');
-let {users} = require('./data');
+const users = require('./routes/users');
 
 const app = express();
-
 
 // Set Static Files
 app.use(express.static('./methods-public'));
@@ -12,8 +11,21 @@ app.use(express.static('./methods-public'));
 // BodyParser (middleware that give you access to the data from the body of the request)
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
+// TODO Login
+
+// Login (test)
+app.post('/login', (req, res) => {
+    const {name} = req.body;
+    if (name) {
+        return res.status(200).send(`Welcome ${name}`);
+    }
+    res.status(401).send('Missing Name and/or Password');
+})
 
 // =================   ROUTES   =================
+app.use('/api/people', users);
+
+
 app.get('/api/products/names', (req, res) => {
     const productsNames = products.map(product => {
         return product.name;
@@ -59,35 +71,6 @@ app.get('/api/products/query', (req, res) => {
         sortedProducts = sortedProducts.slice(0, Number(limit));
     }
     res.status(200).json(sortedProducts);
-})
-
-// Get all users (request from javascript.html)
-app.get('/api/people', (req, res) => {
-    res.status(200).json({success: true, data: users});
-})
-// Get user by name (request from Form HTML element/javascript.html)
-app.post('/api/people', (req, res) => {
-    const {name} = req.body;
-    if (name) {
-        const user = users.filter(user => {
-            return user.name === name;
-    })
-    if (user[0]) {
-        return res.status(201).json({success: true, person: user[0]});
-    } else {
-        return res.status(201).json({success: true, msg: "User doesn't exist"});
-    }
-    }
-    res.status(400).json({success: false, msg: "Please, enter a name"});
-})
-
-// Login (test)
-app.post('/login', (req, res) => {
-    const {name} = req.body;
-    if (name) {
-        return res.status(200).send(`Welcome ${name}`);
-    }
-    res.status(401).send('Missing Name and/or Password');
 })
 
 app.get('/about', (req, res) => {

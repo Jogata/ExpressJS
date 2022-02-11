@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./normalize.css" />
     <link rel="stylesheet" href="./styles.css" />
     <title>Traditional</title>
   </head>
@@ -13,6 +14,7 @@
         <h5>HTTP Methods</h5>
         <div>
           <a href="index.html">regular </a>
+          <!-- <a href="javascript.html">javascript </a> -->
         </div>
       </div>
     </nav>
@@ -21,10 +23,26 @@
         <h3>Traditional Form</h3>
         <div class="form-row">
           <label for="name"> enter name </label>
-          <input type="text" name="name" id="name" autocomplete="false" />
+          <input type="text" name="name" id="name" autocomplete="new-password"/>
+          <label for="password"> password </label>
+          <input type="password" name="password" id="password"/>
         </div>
         <button type="submit" class="block">submit</button>
       </form>
+
+      <fieldset>
+        <legend><b>Users</b></legend>
+        <details>
+          <summary>List with All Users</summary>
+          <ul>
+            <li>id: 1, name: 'john', password: '123456'</li>
+            <li>id: 2, name: 'peter', password: '123456'</li>
+            <li>id: 3, name: 'susan', password: '123456'</li>
+            <li>id: 4, name: 'anna', password: '123456'</li>
+            <li>id: 5, name: 'emma', password: '123456'</li>
+          </ul>
+        </details>
+      </fieldset>
     </main>
   </body>
 </html>
