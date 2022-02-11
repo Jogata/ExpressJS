@@ -2,23 +2,8 @@ const express = require('express');
 const {products} = require('./data');
 let {users} = require('./data');
 
-// =============== DEMO ================
-// const logger = require('./demo/logger');
-// const authorize = require('./demo/authorize');
-
-// add * ?user=jogata * to the URL in the browser to access Authorize Middleware
-// app.use([authorize, logger]);
-
-// app.get('/demo', logger, (req, res) => {
-//     res.send('<h1>Home Page</h1><a href="/api/products">Products</a>');
-// })
-
-// app.get('/demo/api/products', logger, (req, res) => {
-//     res.json(products);
-// })
-// =============== DEMO ================
-
 const app = express();
+
 
 // Set Static Files
 app.use(express.static('./methods-public'));
@@ -84,7 +69,14 @@ app.get('/api/people', (req, res) => {
 app.post('/api/people', (req, res) => {
     const {name} = req.body;
     if (name) {
-        res.status(201).json({success: true, person: name});
+        const user = users.filter(user => {
+            return user.name === name;
+    })
+    if (user[0]) {
+        return res.status(201).json({success: true, person: user[0]});
+    } else {
+        return res.status(201).json({success: true, msg: "User doesn't exist"});
+    }
     }
     res.status(400).json({success: false, msg: "Please, enter a name"});
 })
