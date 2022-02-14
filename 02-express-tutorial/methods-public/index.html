@@ -13,27 +13,44 @@
       <div class="nav-center">
         <h5>HTTP Methods</h5>
         <div>
-          <a href="index.html">regular </a>
+          <a href="#login" onclick="toggleHidden()">registration</a>
+          <a href="#registration" onclick="toggleHidden()" class="hidden">login</a>
+          <!-- <a href="index.html">regular </a> -->
           <!-- <a href="javascript.html">javascript </a> -->
         </div>
       </div>
     </nav>
     <main>
-      <form action="/login" method="POST">
+      <form action="/api/people/login" method="POST">
         <h3>Traditional Form</h3>
         <div class="form-row">
-          <label for="name"> enter name </label>
-          <input type="text" name="name" id="name" autocomplete="new-password"/>
-          <label for="password"> password </label>
-          <input type="password" name="password" id="password"/>
+          <label for="name1"> enter name </label>
+          <input type="text" name="name1" id="name1 login" autocomplete="new-password"/>
+          <label for="password1"> password </label>
+          <input type="password" name="password1" id="password1"/>
         </div>
+        <small class="form-alert">user found</small>
+        <button type="submit" class="block">submit</button>
+      </form>
+
+      <form action="/api/people/registration" method="POST" class="hidden">
+        <h3>Traditional Form</h3>
+        <div class="form-row">
+          <label for="name2"> enter name </label>
+          <input type="text" name="name2" id="name2 registration" autocomplete="new-password"/>
+          <label for="password2"> password </label>
+          <input type="password" name="password2" id="password2"/>
+          <label for="confirm"> confirm password </label>
+          <input type="password" name="confirm" id="confirm"/>
+        </div>
+        <small class="form-alert">user found</small>
         <button type="submit" class="block">submit</button>
       </form>
 
       <fieldset>
         <legend><b>Users</b></legend>
         <details>
-          <summary>List with All Users</summary>
+          <summary>List with All Users === /api/people</summary>
           <ul>
             <li>id: 1, name: 'john', password: '123456'</li>
             <li>id: 2, name: 'peter', password: '123456'</li>
@@ -44,5 +61,16 @@
         </details>
       </fieldset>
     </main>
+    <script>
+      function toggleHidden() {
+        const forms = document.getElementsByTagName('form');
+        const ankers = document.getElementsByTagName('a');
+        forms[0].classList.toggle('hidden');
+        forms[1].classList.toggle('hidden');
+        ankers[0].classList.toggle('hidden');
+        ankers[1].classList.toggle('hidden');
+        console.log(forms);
+      }
+    </script>
   </body>
 </html>

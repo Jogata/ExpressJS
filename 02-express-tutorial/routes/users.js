@@ -8,12 +8,22 @@ router.get('/', (req, res) => {
     res.status(200).json({success: true, data: users});
 })
 
-// Get user by name (request from Form HTML element/javascript.html)
-router.post('/', (req, res) => {
-    const {name} = req.body;
-    if (name) {
+// Create new user / Registration
+router.post('/registration', (req, res) => {
+    const user = {
+        name: req.body.name2,
+        password: req.body.password2,
+    }
+    users.push(user);
+    res.send('TODO: Registration in DB');
+})
+
+// Get user by name / Login
+router.post('/login', (req, res) => {
+    const {name1} = req.body;
+    if (name1) {
         const user = users.filter(user => {
-            return user.name === name;
+            return user.name === name1;
     })
     if (user[0]) {
         return res.status(201).json({success: true, person: user[0]});
