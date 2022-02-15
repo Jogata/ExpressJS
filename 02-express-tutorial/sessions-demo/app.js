@@ -28,6 +28,13 @@ const redirectLogin = (req, res, next) => {
         res.redirect('/login');
     }
 }
+const redirectHome = (req, res, next) => {
+    if (req.session.userID) {
+        res.redirect('/home');
+    } else {
+        next();
+    }
+}
 
 app.get('/', (req, res) => {
     const { userID } = req.session;
@@ -55,7 +62,7 @@ app.get('/home', redirectLogin, (req, res) => {
     `)
 })
 
-app.get('/login', (req, res) => {
+app.get('/login', redirectHome, (req, res) => {
     res.send(`
         <h1>Login</h1>
         <form method='post' action='/login'>
@@ -67,7 +74,7 @@ app.get('/login', (req, res) => {
     `);
 })
 
-app.get('/register', (req, res) => {
+app.get('/register', redirectHome, (req, res) => {
     res.send(`
         <h1>Register</h1>
         <form method='post' action='/register'>
@@ -80,15 +87,47 @@ app.get('/register', (req, res) => {
     `);
 })
 
-app.post('/login', (req, res) => {
-    res.send('post log');
+app.post('/login', redirectHome, (req, res) => {
+    const { name, password } = req.body;
+    // TODO: validate input
+    // TODO: hash password
+    if (name && password) {
+        const user = users.find(user => {
+            return user.name === name && user.password === password;
+        })
+
+        if (user) {
+            req.session.userID = user.id;
+            return res.redirect('/home');
+        }
+    }
+    res.send('Wrong user/pass');
 })
 
-app.post('/register', (req, res) => {
-    res.send('post reg');
+app.post('/register', redirectHome, (req, res) => {
+    const { name, email, password } = req.body;
+    // TODO: validate input
+    // TODO: hash password
+    if (name && email && password) {
+        const isUserExist = users.some(user => {
+            return user.name === name;
+        })
+
+        if (!isUserExist) {
+            const user = {
+                id: users.length + 1,
+                name,
+                email,
+                password,
+            }
+
+            users.push(user);
+        }
+    }
+    res.send('User exist');
 })
 
-app.post('/logout', (req, res) => {
+app.post('/logout', redirectLogin, (req, res) => {
     res.send('logout');
 })
 
