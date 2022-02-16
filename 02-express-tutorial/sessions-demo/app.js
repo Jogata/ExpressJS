@@ -21,14 +21,14 @@ app.use(session({
     },
 }));
 
-const redirectLogin = (req, res, next) => {
+const redirectGuestToLogin = (req, res, next) => {
     if (req.session.userID) {
         next();
     } else {
         res.redirect('/login');
     }
 }
-const redirectHome = (req, res, next) => {
+const redirectUserToHome = (req, res, next) => {
     if (req.session.userID) {
         res.redirect('/home');
     } else {
@@ -51,18 +51,21 @@ app.get('/', (req, res) => {
     `)
 })
 
-app.get('/home', redirectLogin, (req, res) => {
+app.get('/home', redirectGuestToLogin, (req, res) => {
+    const user = users.find(user => {
+        return user.id === req.session.userID;
+    })
     res.send(`
     <h1>Welcome!</h1>
     <a href='/'>Main</a>
     <ul>
-        <li>Name: </li>
-        <li>ID: </li>
+        <li>Name: ${user.name}</li>
+        <li>ID: ${user.id}</li>
     </ul>
     `)
 })
 
-app.get('/login', redirectHome, (req, res) => {
+app.get('/login', redirectUserToHome, (req, res) => {
     res.send(`
         <h1>Login</h1>
         <form method='post' action='/login'>
@@ -74,12 +77,12 @@ app.get('/login', redirectHome, (req, res) => {
     `);
 })
 
-app.get('/register', redirectHome, (req, res) => {
+app.get('/register', redirectUserToHome, (req, res) => {
     res.send(`
         <h1>Register</h1>
         <form method='post' action='/register'>
         <input type="text" name="name" id="name" placeholder="Name" required"/>
-        <input type="email" name="email" id="email"/>
+        <input type="email" name="email" placeholder="Email" id="email"/>
         <input type="password" name="password" id="password" placeholder="Password" required"/>
         <input type="submit"/>
         </form>
@@ -87,7 +90,7 @@ app.get('/register', redirectHome, (req, res) => {
     `);
 })
 
-app.post('/login', redirectHome, (req, res) => {
+app.post('/login', redirectUserToHome, (req, res) => {
     const { name, password } = req.body;
     // TODO: validate input
     // TODO: hash password
@@ -104,11 +107,11 @@ app.post('/login', redirectHome, (req, res) => {
     res.send('Wrong user/pass');
 })
 
-app.post('/register', redirectHome, (req, res) => {
+app.post('/register', redirectUserToHome, (req, res) => {
     const { name, email, password } = req.body;
     // TODO: validate input
     // TODO: hash password
-    if (name && email && password) {
+    if (name && password) {
         const isUserExist = users.some(user => {
             return user.name === name;
         })
@@ -122,13 +125,24 @@ app.post('/register', redirectHome, (req, res) => {
             }
 
             users.push(user);
+            req.session.userID = user.id;
+            return res.redirect('/home');
+        } else {
+            res.send('User exist');
         }
+    } else {
+        res.send('Missing name/pass');
     }
-    res.send('User exist');
 })
 
-app.post('/logout', redirectLogin, (req, res) => {
-    res.send('logout');
+app.post('/logout', redirectGuestToLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/login');
+        }
+        res.clearCookie('sid');
+        res.redirect('/login');
+    })
 })
 
 app.listen(3000, () => {
